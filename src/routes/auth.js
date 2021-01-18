@@ -15,7 +15,11 @@ authRoutes.post(
     authController.postLogin
 );
 
-authRoutes.post('/signup', authController.postSignup);
+authRoutes.post(
+    '/signup',
+    validator.validateSignup(),
+    authController.postSignup
+);
 
 authRoutes.get('/verify/:token', authController.getVerifyToken);
 

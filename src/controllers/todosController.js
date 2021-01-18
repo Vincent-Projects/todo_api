@@ -6,24 +6,30 @@ function isBoolean(value) {
 }
 
 exports.getTodos = async (req, res, next) => {
+    let todos;
+
     try {
-        const todos = await Todo.find({ userId: req.userId });
-
-        if (!todos) {
-            return res.status(401).json({
-                message: "Failed to retreive data"
-            });
-        }
-
-        res.status(200).json({
-            message: "Successfully retreive tasks",
-            data: {
-                todos: todos
-            }
-        });
+        todos = await Todo.find({ userId: req.userId });
     } catch (err) {
-        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
     }
+
+    if (!todos) {
+        return res.status(401).json({
+            message: "Failed to retreive data"
+        });
+    }
+
+    res.status(200).json({
+        message: "Successfully retreive tasks",
+        data: {
+            todos: todos
+        }
+    });
 }
 
 exports.postTodo = async (req, res, next) => {
@@ -45,7 +51,11 @@ exports.postTodo = async (req, res, next) => {
     try {
         await todo.save();
     } catch (err) {
-        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
     }
 
     res.status(200).json({
@@ -64,7 +74,11 @@ exports.deleteTodo = async (req, res, next) => {
     try {
         oldTask = await Todo.findOneAndDelete({ _id: todoId, userId: req.userId });
     } catch (err) {
-        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
     }
 
     res.status(200).json({
@@ -100,7 +114,11 @@ exports.putUpdate = async (req, res, next) => {
     try {
         todo = await Todo.findOne({ _id: id });
     } catch (err) {
-        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
     }
 
     if (!todo) {
@@ -110,7 +128,6 @@ exports.putUpdate = async (req, res, next) => {
     }
 
     if (task) {
-
         todo.task = task;
     }
 
@@ -139,7 +156,11 @@ exports.putUpdate = async (req, res, next) => {
     try {
         success = await todo.save();
     } catch (err) {
-        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
     }
 
     if (!success) {

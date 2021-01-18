@@ -7,3 +7,40 @@ exports.validateLogin = () => {
         body('password', 'Password must be 8 characters long').trim().isLength({ min: 8 })
     ]
 }
+
+exports.validateSignup = () => {
+    return [
+        body('username')
+            .trim()
+            .exists()
+            .withMessage('username is empty')
+            .isLength({ min: 3, max: 30 })
+            .withMessage('username should be between 3 to 30 characters')
+            .isAlphanumeric()
+            .withMessage('Should contains only alphanumeric values'),
+        body('email')
+            .trim()
+            .exists()
+            .withMessage('username is empty')
+            .isEmail()
+            .withMessage('input don\'t match email'),
+        body('password')
+            .trim()
+            .exists()
+            .withMessage('username is empty')
+            .isLength({ min: 8 })
+            .withMessage("password should be at least 8 characters")
+            .matches(/[@*&$!.?<>£]/)
+            .withMessage("Should contains at least one special characters ( @ * & $ ! . ? < > £ )")
+            .matches(/\d/)
+            .withMessage('should contains at least one numbers')
+            .matches(/[a-z]/)
+            .withMessage("Should contains at least on lower case character")
+            .matches(/[A-Z]/)
+            .withMessage("Should contains at least on uppercase character"),
+        body('confirm')
+            .trim()
+            .exists()
+            .withMessage('confirm password is empty'),
+    ]
+}

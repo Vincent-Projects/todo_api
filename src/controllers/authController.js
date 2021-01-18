@@ -19,12 +19,16 @@ const FRONT_BASE_URL = process.env.FRONT_BASE_URL;
 
 
 
+
 exports.postLogin = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(statusCodes.UNAUTHORIZED).json({
-            message: 'Something Wrong with data check'
+            message: 'Something Wrong with data check',
+            data: {
+                errors: errors.errors
+            }
         });
     }
 
@@ -36,7 +40,7 @@ exports.postLogin = async (req, res, next) => {
     let user;
 
     try {
-        user = await User.findOne({ email });
+        user = await User.findOne({ email: email.toLowerCase() });
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -90,6 +94,17 @@ exports.postLogin = async (req, res, next) => {
 }
 
 exports.postSignup = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "Something wrong with data check",
+            data: {
+                errors: errors.errors
+            }
+        });
+    }
+
     const {
         username,
         email,
@@ -115,7 +130,7 @@ exports.postSignup = async (req, res, next) => {
     let user;
 
     try {
-        user = await User.findOne({ email })
+        user = await User.findOne({ email: email.toLowerCase() })
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -148,7 +163,7 @@ exports.postSignup = async (req, res, next) => {
         });
     }
 
-    const token = jwt.sign({ email: email }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
+    const token = jwt.sign({ email: email.toLowerCase() }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
     // envoyer ce token par mail a l'adress https://domain.com/auth/verify/:token
 
 
@@ -164,14 +179,14 @@ exports.postSignup = async (req, res, next) => {
 
     mailOptions = {
         from: NODEMAILER_EMAIL,
-        to: email,
+        to: email.toLowerCase(),
         subject: "Account Verification",
         html: verificationPage,
     }
 
     user = new User({
         username: username,
-        email: email,
+        email: email.toLowerCase(),
         password: hash,
         verify_account_token: token,
         verify_account_expire: new Date(Date.now() + JWT_EXPIRE * 1000)
