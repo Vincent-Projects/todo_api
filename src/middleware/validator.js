@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 exports.validateLogin = () => {
     return [
@@ -42,5 +42,30 @@ exports.validateSignup = () => {
             .trim()
             .exists()
             .withMessage('confirm password is empty'),
+    ]
+}
+
+exports.validatePostTask = () => {
+    return [
+        body('task')
+            .exists()
+            .withMessage("Task is empty")
+    ]
+}
+
+exports.validateDeleteTaskId = () => {
+    return [
+        param('todoId')
+            .exists()
+            .isMongoId()
+            .withMessage('Id does not match Mongodb ObjectId')
+    ]
+}
+
+exports.validatePutTodo = () => {
+    return [
+        body('task')
+            .exists()
+            .withMessage('Task should not be empty')
     ]
 }

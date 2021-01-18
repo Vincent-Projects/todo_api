@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { statusCodes } = require("../constants");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -26,7 +27,11 @@ module.exports = (req, res, next) => {
     try {
         verifiedToken = jwt.verify(access_token, JWT_SECRET);
     } catch (err) {
-        console.log(err);
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
     }
 
     req.userId = verifiedToken.userId;

@@ -1,5 +1,6 @@
+const { validationResult } = require('express-validator');
 const Todo = require('../models/Todo');
-const statusCode = require('../constants').statusCodes;
+const statusCodes = require('../constants').statusCodes;
 
 function isBoolean(value) {
     return value === true || value === false;
@@ -33,6 +34,17 @@ exports.getTodos = async (req, res, next) => {
 }
 
 exports.postTodo = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "Something Wrong With input",
+            data: {
+                errors: errors.errors
+            }
+        })
+    }
+
     const {
         task
     } = req.body;
@@ -67,6 +79,17 @@ exports.postTodo = async (req, res, next) => {
 }
 
 exports.deleteTodo = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "Can't delete this task",
+            data: {
+                errors: errors.errors
+            }
+        })
+    }
+
     const { todoId } = req.params;
 
     let oldTask;
@@ -81,6 +104,12 @@ exports.deleteTodo = async (req, res, next) => {
         return next(err);
     }
 
+    if (!oldTask) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: 'There was a problem deleting this task'
+        });
+    }
+
     res.status(200).json({
         message: "Successfully delete task",
         data: {
@@ -90,6 +119,17 @@ exports.deleteTodo = async (req, res, next) => {
 }
 
 exports.putUpdate = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "Input Validation Failed",
+            data: {
+                errors: errors.errors
+            }
+        });
+    }
+
     const {
         id,
         task = null,
@@ -98,13 +138,13 @@ exports.putUpdate = async (req, res, next) => {
     } = req.body;
 
     if (task === null && complete === null && archived === null) {
-        return res.status(statusCode.UNAUTHORIZED).json({
+        return res.status(statusCodes.UNAUTHORIZED).json({
             message: "There is no data to be changed"
         });
     }
 
     if (!id) {
-        return res.status(statusCode.UNAUTHORIZED).json({
+        return res.status(statusCodes.UNAUTHORIZED).json({
             message: "No task id provided"
         });
     }
@@ -122,7 +162,7 @@ exports.putUpdate = async (req, res, next) => {
     }
 
     if (!todo) {
-        return res.status(statusCode.UNAUTHORIZED).json({
+        return res.status(statusCodes.UNAUTHORIZED).json({
             message: "Failed to load task"
         });
     }
@@ -133,7 +173,7 @@ exports.putUpdate = async (req, res, next) => {
 
     if (complete) {
         if (isBoolean(complete)) {
-            return res.status(statusCode.UNAUTHORIZED).json({
+            return res.status(statusCodes.UNAUTHORIZED).json({
                 message: "Data type must match Todo object field type"
             });
         }
@@ -143,7 +183,7 @@ exports.putUpdate = async (req, res, next) => {
 
     if (archived) {
         if (isBoolean(archived)) {
-            return res.status(statusCode.UNAUTHORIZED).json({
+            return res.status(statusCodes.UNAUTHORIZED).json({
                 message: "Data type must match Todo object field type"
             });
         }
@@ -164,7 +204,7 @@ exports.putUpdate = async (req, res, next) => {
     }
 
     if (!success) {
-        return res.status(statusCode.UNAUTHORIZED).json({
+        return res.status(statusCodes.UNAUTHORIZED).json({
             message: "Failed to update task"
         });
     }
