@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      deploy: todo-test
+  template:
+    metadata:
+      labels:
+        deploy: todo-test
+    spec:
+      containers:
+      - name: todo-test
+        image: vincentcrysdev/first-test:v7
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-credentials
+              key: user
+        - name: MONGODB_PASS
+          valueFrom:
+              secretKeyRef:
+                name: mongodb-credentials
+                key: pass

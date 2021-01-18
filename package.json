@@ -1,0 +1,29 @@
+{
+    "name": "kubernetes-todo",
+    "version": "7.6.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "NODE_ENV=production node index.js",
+        "dev": "NODE_ENV=development nodemon index.js"
+    },
+    "author": "Vincent Rouilhac",
+    "license": "ISC",
+    "devDependencies": {
+        "dotenv": "^8.2.0",
+        "nodemon": "^2.0.7"
+    },
+    "dependencies": {
+        "axios": "^0.21.1",
+        "bcrypt": "^5.0.0",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "express-jwt": "^6.0.0",
+        "express-jwt-authz": "^2.4.1",
+        "express-validator": "^6.9.2",
+        "jsonwebtoken": "^8.5.1",
+        "jwks-rsa": "^1.12.2",
+        "mongoose": "^5.11.11",
+        "nodemailer": "^6.4.17"
+    }
+}
