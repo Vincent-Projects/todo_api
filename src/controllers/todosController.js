@@ -172,7 +172,7 @@ exports.putUpdate = async (req, res, next) => {
     }
 
     if (complete) {
-        if (isBoolean(complete)) {
+        if (!isBoolean(complete)) {
             return res.status(statusCodes.UNAUTHORIZED).json({
                 message: "Data type must match Todo object field type"
             });
@@ -182,7 +182,7 @@ exports.putUpdate = async (req, res, next) => {
     }
 
     if (archived) {
-        if (isBoolean(archived)) {
+        if (!isBoolean(archived)) {
             return res.status(statusCodes.UNAUTHORIZED).json({
                 message: "Data type must match Todo object field type"
             });
