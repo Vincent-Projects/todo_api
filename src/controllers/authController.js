@@ -1,23 +1,9 @@
-const jwt = require('jsonwebtoken');
-const User = require("../models/User");
-const bcrypt = require('bcrypt');
 const { validationResult } = require("express-validator");
 
 const statusCodes = require("../constants").statusCodes;
-
-const TRANSPORTER = require("../mailer/transporter");
-const mailTemplate = require('../nodemailer/template');
-const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
-const FRONT_BASE_URL = process.env.FRONT_BASE_URL;
-
-const JWT_SECRET = process.env.JWT_SECRET;
-const BCRYPT_ROUND = parseInt(process.env.BCRYPT_ROUND);
 const JWT_EXPIRE = 86400;
 
-
-
 // -- Change on import ( branch : best-practice )
-const UsersDAL = require('../users').UsersDAL;
 const UserService = require('../users').UserService;
 
 

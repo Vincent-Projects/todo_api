@@ -64,8 +64,8 @@ exports.validateDeleteTaskId = () => {
 
 exports.validatePutTodo = () => {
     return [
-        body('task')
+        body('id')
             .exists()
-            .withMessage('Task should not be empty')
+            .withMessage('Must provide the id of the task')
     ]
 }
