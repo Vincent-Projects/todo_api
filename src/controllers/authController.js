@@ -19,6 +19,7 @@ const FRONT_BASE_URL = process.env.FRONT_BASE_URL;
 
 // -- Change on import ( branch : best-practice )
 const UsersDAL = require('../users').UsersDAL;
+const UserService = require('../users').UserService;
 
 
 
@@ -34,55 +35,13 @@ exports.postLogin = async (req, res, next) => {
         });
     }
 
-    const {
-        email,
-        password
-    } = req.body;
+    const { email, password } = req.body;
 
-    let user;
+    const { err, user, token } = await UserService.login(email.toLowerCase(), password);
 
-    try {
-        user = await UsersDAL.getByEmail(email.toLowerCase());
-    } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = statusCodes.UNAUTHORIZED;
-        }
-        err.url = req.url;
+    if (err) {
         return next(err);
     }
-
-    if (!user) {
-        return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "No user registered with this email"
-        });
-    }
-
-    if (user.verify_account_token || user.verify_account_expire) {
-        return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "You need to verify you account"
-        });
-    }
-
-    let hash;
-
-    try {
-
-        hash = await bcrypt.compare(password, user.password);
-    } catch (err) {
-        if (!err.statusCode) {
-            err.statusCode = statusCodes.UNAUTHORIZED;
-        }
-        err.url = req.url;
-        return next(err);
-    }
-
-    if (!hash) {
-        return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "Wrong Password"
-        });
-    }
-
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
 
     res.status(statusCodes.OK).json({
         message: "Successful Login",
@@ -93,6 +52,56 @@ exports.postLogin = async (req, res, next) => {
             token_expire: 87400
         }
     });
+
+    /*const {
+        email,
+        password
+    } = req.body;
+ 
+    let user;
+ 
+    try {
+        user = await UsersDAL.getByEmail(email.toLowerCase());
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
+    }
+ 
+    if (!user) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "No user registered with this email"
+        });
+    }
+ 
+    if (user.verify_account_token || user.verify_account_expire) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "You need to verify you account"
+        });
+    }
+ 
+    let hash;
+ 
+    try {
+ 
+        hash = await bcrypt.compare(password, user.password);
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = statusCodes.UNAUTHORIZED;
+        }
+        err.url = req.url;
+        return next(err);
+    }
+ 
+    if (!hash) {
+        return res.status(statusCodes.UNAUTHORIZED).json({
+            message: "Wrong Password"
+        });
+    }
+ 
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRE });*/
 }
 
 exports.postSignup = async (req, res, next) => {
