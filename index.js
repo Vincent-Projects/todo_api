@@ -4,11 +4,11 @@ const mongoose = require("mongoose");
 const cors = require('cors');
 const { statusCodes } = require('./src/constants');
 
-
 if (process.env.NODE_ENV === "development")
     require("dotenv").config({ path: path.join(__dirname, "config", "config.env") });
 
 const apiRoutes = require('./src/routes');
+
 const server = express();
 
 server.use(cors());

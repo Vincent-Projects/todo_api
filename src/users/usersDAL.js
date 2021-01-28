@@ -27,7 +27,14 @@ class UsersDAL {
             return false;
         }
 
-        return User.findOne({ verification_token: token });
+        return User.findOne({ verify_account_token: token });
+    }
+
+    static getByResetToken(token) {
+        if (!token)
+            return false;
+
+        return User.findOne({ reset_password_token: token });
     }
 
     static validateVerifyToken(user) {
@@ -35,8 +42,8 @@ class UsersDAL {
             return false;
         }
 
-        user.verification_token = null;
-        user.verification_token_expire = null;
+        user.verify_account_token = null;
+        user.verify_account_expire = null;
 
         return user.save();
     }
