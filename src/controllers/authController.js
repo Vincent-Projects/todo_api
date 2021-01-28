@@ -17,6 +17,8 @@ const JWT_EXPIRE = 86400;
 const BASE_URL = process.env.BASE_URL;
 const FRONT_BASE_URL = process.env.FRONT_BASE_URL;
 
+// -- Change on import ( branch : best-practice )
+const UsersDAL = require('../users').UsersDAL;
 
 
 
@@ -40,7 +42,7 @@ exports.postLogin = async (req, res, next) => {
     let user;
 
     try {
-        user = await User.findOne({ email: email.toLowerCase() });
+        user = await UsersDAL.getByEmail(email.toLowerCase());
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -130,7 +132,7 @@ exports.postSignup = async (req, res, next) => {
     let user;
 
     try {
-        user = await User.findOne({ email: email.toLowerCase() })
+        user = await UsersDAL.getByEmail(email.toLowerCase());
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -146,6 +148,7 @@ exports.postSignup = async (req, res, next) => {
     }
 
     let hash;
+
     try {
 
         hash = await bcrypt.hash(password, BCRYPT_ROUND);
@@ -184,16 +187,14 @@ exports.postSignup = async (req, res, next) => {
         html: verificationPage,
     }
 
-    user = new User({
-        username: username,
-        email: email.toLowerCase(),
-        password: hash,
-        verify_account_token: token,
-        verify_account_expire: new Date(Date.now() + JWT_EXPIRE * 1000)
-    });
-
     try {
-        success = await user.save();
+        success = await UsersDAL.saveUser(
+            username,
+            email.toLowerCase(),
+            hash,
+            token,
+            new Date(Date.now() + JWT_EXPIRE * 1000)
+        );
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -232,7 +233,7 @@ exports.getVerifyToken = async (req, res, next) => {
     let success = false;
     let user;
     try {
-        user = await User.findOne({ verify_account_token: token });
+        user = await UsersDAL.getByVerificationToken(token);
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -255,11 +256,8 @@ exports.getVerifyToken = async (req, res, next) => {
         });
     }
 
-    user.verify_account_expire = null;
-    user.verify_account_token = null;
-
     try {
-        success = await user.save();
+        success = await UsersDAL.validateVerifyToken(user);
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
@@ -287,14 +285,14 @@ exports.getVerifyToken = async (req, res, next) => {
 }
 
 exports.postResetPasswordSendLink = async (req, res, next) => {
-    const { email } = req.body;
+    let { email } = req.body;
 
     let success = false;
     let mailOptions;
     let user;
 
     try {
-        user = await User.findOne({ email: email });
+        user = await UsersDAL.getByEmail(email.toLowerCase());
     } catch (err) {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;

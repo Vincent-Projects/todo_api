@@ -36,5 +36,4 @@ const UserSchema = Schema({
     }
 });
 
-module.exports = mongoose.model("Users", UserSchema); // For the purpose of best-practice i changed this
-// User => Users
+module.exports = mongoose.model("User", UserSchema);
