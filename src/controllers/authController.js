@@ -172,7 +172,7 @@ exports.postSignup = async (req, res, next) => {
     const text2 = `If you have any questions or recommandations for the app, feel free to email me via vincent.crys.dev@gmail.com.`;
     const link = {
         text: "Activate My Account",
-        href: `${BASE_URL}/auth/verify/${token}`
+        href: `${FRONT_BASE_URL}/auth/confirm/account/${token}`
     };
 
     const verificationPage = mailTemplate(title, text1, text2, link);
