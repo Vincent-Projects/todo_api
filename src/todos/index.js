@@ -6,4 +6,4 @@ module.exports = {
     Todo,
     TodosDAL,
     TodoService
-}
+};

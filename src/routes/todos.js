@@ -1,7 +1,7 @@
-const express = require("express");
+const express = require('express');
 const validator = require('../middleware/validator');
 
-const todosController = require("../controllers/todosController");
+const todosController = require('../controllers/todosController');
 
 const todosRoutes = express.Router();
 
@@ -9,10 +9,10 @@ const todosRoutes = express.Router();
  *  Base Routes /todos
  */
 
-todosRoutes.get("/", todosController.getTodos);
+todosRoutes.get('/', todosController.getTodos);
 
 todosRoutes.post(
-    "/add",
+    '/add',
     validator.validatePostTask(),
     todosController.postTodo
 );

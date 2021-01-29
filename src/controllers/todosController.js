@@ -12,23 +12,23 @@ exports.getTodos = async (req, res, next) => {
         return next(err);
 
     res.status(200).json({
-        message: "Successfully retreive tasks",
+        message: 'Successfully retreive tasks',
         data: {
             todos: todos
         }
     });
-}
+};
 
 exports.postTodo = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "Something Wrong With input",
+            message: 'Something Wrong With input',
             data: {
                 errors: errors.errors
             }
-        })
+        });
     }
 
     const {
@@ -43,23 +43,23 @@ exports.postTodo = async (req, res, next) => {
         return next(err);
 
     res.status(200).json({
-        message: "Successfully Save new Task",
+        message: 'Successfully Save new Task',
         data: {
             todo: todo
         }
-    })
-}
+    });
+};
 
 exports.deleteTodo = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "Can't delete this task",
+            message: 'Can\'t delete this task',
             data: {
                 errors: errors.errors
             }
-        })
+        });
     }
 
     const { todoId } = req.params;
@@ -71,19 +71,19 @@ exports.deleteTodo = async (req, res, next) => {
         return next(err);
 
     res.status(200).json({
-        message: "Successfully delete task",
+        message: 'Successfully delete task',
         data: {
             task: oldTodo
         }
-    })
-}
+    });
+};
 
 exports.putUpdate = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "Input Validation Failed",
+            message: 'Input Validation Failed',
             data: {
                 errors: errors.errors
             }
@@ -103,9 +103,9 @@ exports.putUpdate = async (req, res, next) => {
         return next(err);
 
     res.status(200).json({
-        message: "Successfully Updated new Task",
+        message: 'Successfully Updated new Task',
         data: {
             todo: todo
         }
-    })
-}
+    });
+};

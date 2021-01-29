@@ -1,6 +1,6 @@
 const express = require('express');
 
-const authController = require("../controllers/authController");
+const authController = require('../controllers/authController');
 const validator = require('../middleware/validator');
 
 const authRoutes = express.Router();
@@ -10,7 +10,7 @@ const authRoutes = express.Router();
  */
 
 authRoutes.post(
-    "/login",
+    '/login',
     validator.validateLogin(),
     authController.postLogin
 );

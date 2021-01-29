@@ -13,7 +13,7 @@ class TodosDAL {
             return false;
 
         if (!task)
-            return fasle;
+            return false;
 
         const todo = new Todo({
             userId: userId,
@@ -28,7 +28,7 @@ class TodosDAL {
             return false;
 
         if (!todoId)
-            return fasle;
+            return false;
 
         return Todo.findOneAndDelete({ _id: todoId, userId: userId });
     }

@@ -4,4 +4,4 @@ const MailerService = require('./mailerService');
 module.exports = {
     Mailer,
     MailerService
-}
+};

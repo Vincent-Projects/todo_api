@@ -1,6 +1,6 @@
-const { validationResult } = require("express-validator");
+const { validationResult } = require('express-validator');
 
-const statusCodes = require("../constants").statusCodes;
+const statusCodes = require('../constants').statusCodes;
 const JWT_EXPIRE = 86400;
 
 // -- Change on import ( branch : best-practice )
@@ -28,7 +28,7 @@ exports.postLogin = async (req, res, next) => {
         return next(err);
 
     res.status(statusCodes.OK).json({
-        message: "Successful Login",
+        message: 'Successful Login',
         data: {
             username: user.username,
             email: user.email,
@@ -36,14 +36,14 @@ exports.postLogin = async (req, res, next) => {
             token_expire: 87400
         }
     });
-}
+};
 
 exports.postSignup = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(statusCodes.UNAUTHORIZED).json({
-            message: "Something wrong with data check",
+            message: 'Something wrong with data check',
             data: {
                 errors: errors.errors
             }
@@ -63,12 +63,12 @@ exports.postSignup = async (req, res, next) => {
         return next(err);
 
     res.status(statusCodes.CREATED).json({
-        message: "User successfully created",
+        message: 'User successfully created',
         data: {
             verification_token_expire: JWT_EXPIRE,
         }
     });
-}
+};
 
 exports.getVerifyToken = async (req, res, next) => {
     const { token } = req.params;
@@ -79,12 +79,12 @@ exports.getVerifyToken = async (req, res, next) => {
         return next(err);
 
     res.status(statusCodes.OK).json({
-        message: "Successfully validated the account",
+        message: 'Successfully validated the account',
         data: {
             email: email
         }
     });
-}
+};
 
 exports.postResetPasswordSendLink = async (req, res, next) => {
     let { email } = req.body;
@@ -95,9 +95,9 @@ exports.postResetPasswordSendLink = async (req, res, next) => {
         return next(err);
 
     res.status(statusCodes.OK).json({
-        message: "Successfully sent mail to reset password"
+        message: 'Successfully sent mail to reset password'
     });
-}
+};
 
 exports.postResetPasswordVerifyToken = async (req, res, next) => {
     const { token } = req.params;
@@ -112,9 +112,9 @@ exports.postResetPasswordVerifyToken = async (req, res, next) => {
         return next(err);
 
     res.status(statusCodes.OK).json({
-        message: "Password successfully updated",
+        message: 'Password successfully updated',
         data: {
             email: email
         }
-    })
-}
+    });
+};

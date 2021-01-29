@@ -1,4 +1,4 @@
-const TRANSPORTER = require("./transporter");
+const TRANSPORTER = require('./transporter');
 const NODEMAILER_EMAIL = process.env.NODEMAILER_EMAIL;
 const { statusCodes } = require('../constants');
 

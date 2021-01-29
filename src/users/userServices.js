@@ -15,6 +15,12 @@ const { statusCodes } = require('../constants');
 
 class UserService {
     static async login(email, password) {
+        if (!email || !password) {
+            const error = new Error('No data provided');
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
         let user;
 
         try {
@@ -129,16 +135,16 @@ class UserService {
 
 
         const title = `Hi, ${username}`;
-        const text1 = `Welcome to TodoList, thanks for signing up, i hope you'll enjoy this app. Click the link below to activate your account.`;
-        const text2 = `If you have any questions or recommandations for the app, feel free to email me via vincent.crys.dev@gmail.com.`;
+        const text1 = 'Welcome to TodoList, thanks for signing up, i hope you\'ll enjoy this app. Click the link below to activate your account.';
+        const text2 = 'If you have any questions or recommandations for the app, feel free to email me via vincent.crys.dev@gmail.com.';
         const link = {
-            text: "Activate My Account",
+            text: 'Activate My Account',
             href: `${FRONT_BASE_URL}/auth/confirm/account/${token}`
         };
 
         const verificationPage = Mailer.getEmailString(title, text1, text2, link);
 
-        const { err } = await MailerService.sendMail(email, "Account Verification", verificationPage);
+        const { err } = await MailerService.sendMail(email, 'Account Verification', verificationPage);
 
         if (err)
             return { err: err };
@@ -230,22 +236,22 @@ class UserService {
         }
 
         if (!success) {
-            const error = new Error("Failed to send reset password mail");
+            const error = new Error('Failed to send reset password mail');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
 
-        const title = `Reset Password`;
-        const text1 = `You request for reset password. Click the link below to reset your password.`;
-        const text2 = `If you did not requested for reset password, then don't consider this email`;
+        const title = 'Reset Password';
+        const text1 = 'You request for reset password. Click the link below to reset your password.';
+        const text2 = 'If you did not requested for reset password, then don\'t consider this email';
         const link = {
-            text: "Reset My Password",
+            text: 'Reset My Password',
             href: `${FRONT_BASE_URL}/reset-password/${token}`
         };
 
         const verificationPage = Mailer.getEmailString(title, text1, text2, link);
 
-        const { err } = await MailerService.sendMail(email, "Reset Password", verificationPage);
+        const { err } = await MailerService.sendMail(email, 'Reset Password', verificationPage);
 
         if (err)
             return { err: err };
@@ -266,7 +272,7 @@ class UserService {
         }
 
         if (!user) {
-            const error = new Error("There was a problem with this request");
+            const error = new Error('There was a problem with this request');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
@@ -275,13 +281,13 @@ class UserService {
         const expireDate = new Date(user.reset_password_expire);
 
         if (today > expireDate) {
-            const error = new Error("The reset link has expired");
+            const error = new Error('The reset link has expired');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
 
         if (password !== confirmPassword || !password) {
-            const error = new Error("Password must match");
+            const error = new Error('Password must match');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
@@ -298,7 +304,7 @@ class UserService {
         }
 
         if (!hash) {
-            const error = new Error("Password problem");
+            const error = new Error('Password problem');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
@@ -325,13 +331,13 @@ class UserService {
             return { err: error };
         }
 
-        const title = `Password successfully changed`;
-        const text1 = `Your password has successfully been changed.`;
+        const title = 'Password successfully changed';
+        const text1 = 'Your password has successfully been changed.';
 
         const verificationPage = Mailer.getEmailString(title, text1);
 
         const { email } = jwt.verify(token, JWT_SECRET);
-        const { err } = await MailerService.sendMail(email, "Password Changed", verificationPage);
+        const { err } = await MailerService.sendMail(email, 'Password Changed', verificationPage);
 
         if (err)
             return { err: err };

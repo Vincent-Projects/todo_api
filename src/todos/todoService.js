@@ -71,13 +71,13 @@ class TodoService {
 
     static async update(id, task, complete, archived) {
         if (task === null && complete === null && archived === null) {
-            const error = new Error("There is no data to be changed");
+            const error = new Error('There is no data to be changed');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
 
         if (!id) {
-            const error = new Error("No task id provided");
+            const error = new Error('No task id provided');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
@@ -94,7 +94,7 @@ class TodoService {
         }
 
         if (!todo) {
-            const error = new Error("Failed to load task");
+            const error = new Error('Failed to load task');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
@@ -105,7 +105,7 @@ class TodoService {
 
         if (complete !== null && complete !== undefined) {
             if (!isBoolean(complete)) {
-                const error = new Error("Data type must match Todo object field type");
+                const error = new Error('Data type must match Todo object field type');
                 error.statusCode = statusCodes.UNAUTHORIZED;
                 return { err: error };
             }
@@ -115,7 +115,7 @@ class TodoService {
 
         if (archived !== null && archived !== undefined) {
             if (!isBoolean(archived)) {
-                const error = new Error("Data type must match Todo object field type");
+                const error = new Error('Data type must match Todo object field type');
                 error.statusCode = statusCodes.UNAUTHORIZED;
                 return { err: error };
             }
@@ -135,7 +135,7 @@ class TodoService {
         }
 
         if (!success) {
-            const error = new Error("Failed to update task");
+            const error = new Error('Failed to update task');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
