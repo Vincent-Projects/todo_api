@@ -1,11 +1,11 @@
-const path = require("path");
-const express = require("express");
-const mongoose = require("mongoose");
+const path = require('path');
+const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const { statusCodes } = require('./src/constants');
 
-if (process.env.NODE_ENV === "development")
-    require("dotenv").config({ path: path.join(__dirname, "config", "config.env") });
+if (process.env.NODE_ENV === 'development')
+    require('dotenv').config({ path: path.join(__dirname, 'config', 'config.env') });
 
 const apiRoutes = require('./src/routes');
 
@@ -17,7 +17,7 @@ server.use(apiRoutes);
 
 server.use(async (err, req, res, next) => {
     return res.status(statusCodes.SERVER_ERROR).json({
-        message: "Server Side Problem",
+        message: 'Server Side Problem',
         data: {
             err: err.message,
             url: err.url
@@ -27,7 +27,7 @@ server.use(async (err, req, res, next) => {
 
 
 
-const PORT = 8080;
+const PORT = process.env.PORT || '8080';
 const MONGO_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.xekax.mongodb.net/${process.env.MONGODB_NAME}`;
 const MONGO_OPTIONS = {
     useNewUrlParser: true,

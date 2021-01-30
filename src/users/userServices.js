@@ -69,6 +69,7 @@ class UserService {
 
     static async signup(username, email, password, confirmPassword) {
         if (password !== confirmPassword) {
+            await new Promise(resolve => setTimeout(resolve, 3000));
             const error = new Error('Password does not match');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };

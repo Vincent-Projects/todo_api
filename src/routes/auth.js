@@ -1,9 +1,17 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit')
 
 const authController = require('../controllers/authController');
 const validator = require('../middleware/validator');
 
 const authRoutes = express.Router();
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 3
+});
+authRoutes.use(authLimiter);
+
 
 /**
  *  Base Routes /auth
