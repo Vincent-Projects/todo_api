@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 const NODEMAILER_HOST = process.env.NODEMAILER_HOST;
 const NODEMAILER_PORT = process.env.NODEMAILER_PORT;

@@ -5,8 +5,8 @@ exports.validateLogin = () => {
         body('email', 'email does not exist').exists().trim().isEmail(),
         body('password', 'No password provided').exists(),
         body('password', 'Password must be 8 characters long').trim().isLength({ min: 8 })
-    ]
-}
+    ];
+};
 
 exports.validateSignup = () => {
     return [
@@ -29,29 +29,29 @@ exports.validateSignup = () => {
             .exists()
             .withMessage('username is empty')
             .isLength({ min: 8 })
-            .withMessage("password should be at least 8 characters")
+            .withMessage('password should be at least 8 characters')
             .matches(/[@*&$!.?<>£]/)
-            .withMessage("Should contains at least one special characters ( @ * & $ ! . ? < > £ )")
+            .withMessage('Should contains at least one special characters ( @ * & $ ! . ? < > £ )')
             .matches(/\d/)
             .withMessage('should contains at least one numbers')
             .matches(/[a-z]/)
-            .withMessage("Should contains at least on lower case character")
+            .withMessage('Should contains at least on lower case character')
             .matches(/[A-Z]/)
-            .withMessage("Should contains at least on uppercase character"),
+            .withMessage('Should contains at least on uppercase character'),
         body('confirm')
             .trim()
             .exists()
             .withMessage('confirm password is empty'),
-    ]
-}
+    ];
+};
 
 exports.validatePostTask = () => {
     return [
         body('task')
             .exists()
-            .withMessage("Task is empty")
-    ]
-}
+            .withMessage('Task is empty')
+    ];
+};
 
 exports.validateDeleteTaskId = () => {
     return [
@@ -59,13 +59,13 @@ exports.validateDeleteTaskId = () => {
             .exists()
             .isMongoId()
             .withMessage('Id does not match Mongodb ObjectId')
-    ]
-}
+    ];
+};
 
 exports.validatePutTodo = () => {
     return [
-        body('task')
+        body('id')
             .exists()
-            .withMessage('Task should not be empty')
-    ]
-}
+            .withMessage('Must provide the id of the task')
+    ];
+};

@@ -1,24 +1,24 @@
-const jwt = require("jsonwebtoken");
-const { statusCodes } = require("../constants");
+const jwt = require('jsonwebtoken');
+const { statusCodes } = require('../constants');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports = (req, res, next) => {
-    const authorization = req.get("Authorization").split(" ");
+    const authorization = req.get('Authorization').split(' ');
 
 
     if (!authorization || authorization.length <= 0) {
         return res.status(401).json({
-            message: "You do not have access to this section"
+            message: 'You do not have access to this section'
         });
     }
 
     const token_type = authorization[0];
     const access_token = authorization[1];
 
-    if (!token_type || token_type !== "Bearer" || !access_token) {
+    if (!token_type || token_type !== 'Bearer' || !access_token) {
         return res.status(401).json({
-            message: "Wrong access token"
+            message: 'Wrong access token'
         });
     }
 
@@ -36,4 +36,4 @@ module.exports = (req, res, next) => {
 
     req.userId = verifiedToken.userId;
     next();
-}
+};
