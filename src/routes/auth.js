@@ -55,7 +55,7 @@ authRoutes.post(
  * @apiError {Object}     err        Server Side error & DB errors
  */
 authRoutes.post(
-    '/signup',
+    '/signup/:code',
     validator.validateSignup(),
     authController.postSignup
 );

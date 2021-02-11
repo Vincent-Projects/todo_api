@@ -5,6 +5,7 @@ const JWT_EXPIRE = 86400;
 
 // -- Change on import ( branch : best-practice )
 const UserService = require('../users').UserService;
+const CodeService = require('../code').CodeService;
 
 
 
@@ -39,10 +40,6 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
-    return res.status(statusCodes.UNAUTHORIZED).json({
-        err: "Signup Disabled DM the developer"
-    });
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -52,6 +49,13 @@ exports.postSignup = async (req, res, next) => {
                 errors: errors.errors
             }
         });
+    }
+
+    const { code } = req.params;
+
+    const error = await CodeService.checkCode(code);
+    if (error) {
+        return next(error);
     }
 
     const {
@@ -65,6 +69,12 @@ exports.postSignup = async (req, res, next) => {
 
     if (err)
         return next(err);
+
+    const codeErr = await CodeService.removeCode(code);
+
+    if (codeErr)
+        return next(codeErr);
+
 
     res.status(statusCodes.CREATED).json({
         message: 'User successfully created',
