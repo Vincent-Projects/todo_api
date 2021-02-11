@@ -7,5 +7,9 @@
     "header": {
         "title": "Introduction",
         "filename": "docs/header.md"
+    },
+    "footer": {
+        "title": "Contribution",
+        "filename": "docs/footer.md"
     }
 }
