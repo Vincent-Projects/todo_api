@@ -39,6 +39,10 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
+    return res.status(statusCodes.UNAUTHORIZED).json({
+        err: "Signup Disabled DM the developer"
+    });
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {

@@ -1,0 +1,11 @@
+{
+    "name": "TodoList API Docs",
+    "version": "0.1.0",
+    "description": "TodoList REST API made by <a href='https://github.com/Vincent-Projects'>@Vincent Rouilhac</a>",
+    "title": "TodoList REST API",
+    "sampleUrl": "http://138.68.119.174",
+    "header": {
+        "title": "Introduction",
+        "filename": "docs/header.md"
+    }
+}
