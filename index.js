@@ -15,10 +15,10 @@ server.use(cors());
 server.use(express.json());
 server.use(apiRoutes);
 
+server.use(express.static(path.join(__dirname, 'docs', 'src')));
 server.use('/docs', (req, res, next) => {
-    const message = '<h1>The documentation of the TodoList REST API is in progress</h1>' +
-        '<p>You can see the <a href="https://github.com/Vincent-Projects/todo_api">github repo</a> if you want more informations. You can also DM me as well to know more about this API.</p>';
-    res.send(message);
+    res.setHeader('Content-Type', 'text/html');
+    res.status(statusCodes.OK).sendFile(path.join(__dirname, 'docs', 'src', 'index.html'));
 });
 
 server.use(async (err, req, res, next) => {
