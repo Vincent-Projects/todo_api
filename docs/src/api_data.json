@@ -413,10 +413,10 @@
     "groupTitle": "Authentication"
   },
   {
-    "type": "get",
-    "url": "/todos",
-    "title": "Get all user's tasks",
-    "name": "GetTodos",
+    "type": "delete",
+    "url": "/todos/delete/:todoId",
+    "title": "Delete task",
+    "name": "DeleteTodo",
     "group": "Todos",
     "version": "0.1.0",
     "success": {
@@ -427,7 +427,136 @@
             "type": "String",
             "optional": false,
             "field": "todos",
-            "description": "<p>The user' tasks.</p>"
+            "description": "<p>The user's deleted tasks.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object[]",
+            "optional": false,
+            "field": "errors",
+            "description": "<p>Contains information about what's wrong for each fields.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "err",
+            "description": "<p>Server Side error &amp; DB errors</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/todos.js",
+    "groupTitle": "Todos"
+  },
+  {
+    "type": "get",
+    "url": "/todos",
+    "title": "Get user's tasks",
+    "name": "GetTodos",
+    "group": "Todos",
+    "version": "0.1.0",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String[]",
+            "optional": false,
+            "field": "todos",
+            "description": "<p>The user's tasks.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object[]",
+            "optional": false,
+            "field": "errors",
+            "description": "<p>Contains information about what's wrong for each fields.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "err",
+            "description": "<p>Server Side error &amp; DB errors</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/todos.js",
+    "groupTitle": "Todos"
+  },
+  {
+    "type": "post",
+    "url": "/todos",
+    "title": "Add new task",
+    "name": "PostTodo",
+    "group": "Todos",
+    "version": "0.1.0",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "todos",
+            "description": "<p>The user's tasks.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "Object[]",
+            "optional": false,
+            "field": "errors",
+            "description": "<p>Contains information about what's wrong for each fields.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Object",
+            "optional": false,
+            "field": "err",
+            "description": "<p>Server Side error &amp; DB errors</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/todos.js",
+    "groupTitle": "Todos"
+  },
+  {
+    "type": "put",
+    "url": "/todos/update",
+    "title": "Update task",
+    "name": "PutUpdate",
+    "group": "Todos",
+    "version": "0.1.0",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "todos",
+            "description": "<p>The user's updated tasks.</p>"
           }
         ]
       }
