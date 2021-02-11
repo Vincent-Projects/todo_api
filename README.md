@@ -4,7 +4,9 @@ This is an API for a simple TodoList app that is for learning purpose. It implem
 
 ## Documentation
 
-The documentation will be soon available...
+The documentation will be soon available at [this link](http://http://138.68.119.174/docs). You can see the full code of documentation in `/docs` folder.
+
+I used [apiDoc](https://apidocjs.com/) to create the documentation. You can run `npm run docs` to generate a documentation at `/docs/src`. To understand how it works see the apiDocs documentation.
 
 ## Contribute
 

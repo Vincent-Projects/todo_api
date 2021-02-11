@@ -1,6 +1,6 @@
 {
     "name": "todolist-api",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "This is a REST API for a todo list app with authentication.",
     "main": "index.js",
     "scripts": {
