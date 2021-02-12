@@ -109,7 +109,10 @@ exports.postResetPasswordSendLink = async (req, res, next) => {
         return next(err);
 
     res.status(statusCodes.OK).json({
-        message: 'Successfully sent mail to reset password'
+        message: 'Successfully sent mail to reset password',
+        data: {
+            email: email
+        }
     });
 };
 

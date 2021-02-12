@@ -11,5 +11,16 @@
     "footer": {
         "title": "Contribution",
         "filename": "docs/footer.md"
-    }
+    },
+    "order": [
+        "PostLogin",
+        "PostSignup",
+        "GetVerifyToken",
+        "PostResetPasswordSendLink",
+        "PostResetPasswordVerifyToken",
+        "GetTodos",
+        "PostTodo",
+        "PutUpdate",
+        "DeleteTodo"
+    ]
 }

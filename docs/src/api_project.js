@@ -12,11 +12,22 @@ define({
     "title": "Contribution",
     "content": "<h2>Contribution</h2>\n<p>This project has a learning purpose so i will not implements contributions. I will read them if you do so, if there are great feedback. If you want to fork <a href=\"https://github.com/Vincent-Projects/todo_api\">this project</a> to check the code and learn, feel free to do so. Instructions are detailed in the README.md file. Feel free to DM me if you have any suggestions or to any complementary informations.</p>\n"
   },
+  "order": [
+    "PostLogin",
+    "PostSignup",
+    "GetVerifyToken",
+    "PostResetPasswordSendLink",
+    "PostResetPasswordVerifyToken",
+    "GetTodos",
+    "PostTodo",
+    "PutUpdate",
+    "DeleteTodo"
+  ],
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2021-02-11T22:48:05.893Z",
+    "time": "2021-02-12T22:43:12.221Z",
     "url": "https://apidocjs.com",
     "version": "0.26.0"
   }
