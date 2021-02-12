@@ -54,6 +54,7 @@ exports.postSignup = async (req, res, next) => {
     const { code } = req.params;
 
     const error = await CodeService.checkCode(code);
+
     if (error) {
         return next(error);
     }

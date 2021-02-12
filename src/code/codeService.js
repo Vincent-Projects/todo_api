@@ -26,6 +26,12 @@ class CodeService {
             return error;
         }
 
+        if (!c.code || c.code !== code) {
+            const error = new Error('InvalidSignupCode');
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return error;
+        }
+
         return null;
     }
 
