@@ -20,13 +20,14 @@ class CodeService {
             return err;
         }
 
+
         if (!c) {
             const error = new Error('InvalidSignupCode');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return error;
         }
 
-        if (!c.code || c.code !== code) {
+        if (!c.code || c.code.toString() !== code.toString()) {
             const error = new Error('InvalidSignupCode');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return error;
