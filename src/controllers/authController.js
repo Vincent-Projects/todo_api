@@ -23,7 +23,7 @@ exports.postLogin = async (req, res, next) => {
 
     const { email, password } = req.body;
 
-    const { err, user, token } = await UserService.login(email, password);
+    const { err, user, token } = await UserService.login({ email, password });
 
     if (err)
         return next(err);

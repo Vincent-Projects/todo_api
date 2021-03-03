@@ -14,9 +14,9 @@ const { statusCodes } = require('../constants');
 
 
 class UserService {
-    static async login(email, password) {
+    static async login({ email, password }) {
         if (!email || !password) {
-            const error = new Error('No data provided');
+            const error = new Error('No Data Provided');
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
