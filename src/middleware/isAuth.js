@@ -4,22 +4,35 @@ const { statusCodes } = require('../constants');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports = (req, res, next) => {
-    const authorization = req.get('Authorization').split(' ');
+    const authorization = req.get('Authorization');
 
-
-    if (!authorization || authorization.length <= 0) {
-        return res.status(401).json({
+    if (!authorization) {
+        const error = new Error("No Permissions");
+        error.statusCode = statusCodes.UNAUTHORIZED;
+        throw error;
+        /* return res.status(401).json({
             message: 'You do not have access to this section'
-        });
+        }); */
     }
 
-    const token_type = authorization[0];
-    const access_token = authorization[1];
+    const splitedAuthorization = authorization.split(' ');
 
-    if (!token_type || token_type !== 'Bearer' || !access_token) {
-        return res.status(401).json({
+    const token_type = splitedAuthorization[0];
+    const access_token = splitedAuthorization[1];
+
+    if (!token_type || token_type !== 'Bearer') {
+        const error = new Error("Wrong API Use");
+        error.statusCode = statusCodes.UNAUTHORIZED;
+        throw error;
+    }
+
+    if (!access_token) {
+        const error = new Error("No Token");
+        error.statusCode = statusCodes.UNAUTHORIZED;
+        throw error;
+        /* return res.status(401).json({
             message: 'Wrong access token'
-        });
+        }); */
     }
 
     let verifiedToken;
@@ -30,8 +43,13 @@ module.exports = (req, res, next) => {
         if (!err.statusCode) {
             err.statusCode = statusCodes.UNAUTHORIZED;
         }
-        err.url = req.url;
-        return next(err);
+        throw err;
+    }
+
+    if (!verifiedToken) {
+        const error = new Error("Empty Token");
+        error.statusCode = statusCodes.SERVER_ERROR;
+        throw error;
     }
 
     req.userId = verifiedToken.userId;

@@ -6,7 +6,7 @@
     "scripts": {
         "start": "NODE_ENV=production node index.js",
         "dev": "NODE_ENV=development nodemon index.js",
-        "test": "mocha --reporter spec",
+        "test": "mocha",
         "docs": "grunt"
     },
     "author": "Vincent Rouilhac",
@@ -19,7 +19,8 @@
         "grunt": "^1.3.0",
         "grunt-apidoc": "^0.11.0",
         "mocha": "^8.2.1",
-        "nodemon": "^2.0.7"
+        "nodemon": "^2.0.7",
+        "sinon": "^9.2.4"
     },
     "dependencies": {
         "axios": "^0.21.1",

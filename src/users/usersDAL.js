@@ -10,7 +10,10 @@ class UsersDAL {
         return User.findOne({ email: email });
     }
 
-    static saveUser(username, email, password, verification_token, verification_token_expire) {
+    static saveUser({ username, email, password, verification_token, verification_token_expire }) {
+        if (!username || !email || !password || !verification_token || !verification_token_expire)
+            return false;
+
         const user = new User({
             username,
             email,

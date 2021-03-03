@@ -114,13 +114,13 @@ class UserService {
         let success;
 
         try {
-            success = await UsersDAL.saveUser(
-                username,
-                email.toLowerCase(),
-                hash,
-                token,
-                new Date(Date.now() + JWT_EXPIRE * 1000)
-            );
+            success = await UsersDAL.saveUser({
+                username: username,
+                email: email.toLowerCase(),
+                password: hash,
+                verification_token: token,
+                verification_token_expire: new Date(Date.now() + JWT_EXPIRE * 1000)
+            });
         } catch (err) {
             if (!err.statusCode) {
                 err.statusCode = statusCodes.UNAUTHORIZED;
