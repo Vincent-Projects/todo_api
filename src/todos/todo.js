@@ -13,8 +13,7 @@ const TodoSchema = Schema({
     },
     archived: { // to delete ( deprecated )
         type: Boolean,
-        required: true,
-        default: false
+        required: false,
     },
     userId: {
         type: Schema.Types.ObjectId,

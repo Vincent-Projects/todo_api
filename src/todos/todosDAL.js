@@ -8,7 +8,7 @@ class TodosDAL {
         return Todo.find({ userId: userId });
     }
 
-    static saveTodo(userId, task) {
+    static saveTodo({ userId = undefined, task = undefined, projectId = null } = {}) {
         if (!userId)
             return false;
 
@@ -18,12 +18,13 @@ class TodosDAL {
         const todo = new Todo({
             userId: userId,
             task,
+            projectId
         });
 
         return todo.save();
     }
 
-    static deleteTodo(userId, todoId) {
+    static deleteTodo({ userId = undefined, todoId = undefined } = {}) {
         if (!userId)
             return false;
 
@@ -34,9 +35,29 @@ class TodosDAL {
     }
 
     static getById(id) {
-        if (!id)
-            return false;
+        if (!id) return false;
+
+        if (typeof id !== "string") return false;
+
         return Todo.findById({ _id: id });
+    }
+
+    static getByProjectId({ userId = undefined, projectId = undefined } = {}) {
+        if (!userId) return false;
+        if (!projectId) return false;
+
+        return Todo.find({ userId, projectId });
+    }
+
+    static getWithRecuringTime(userId) {
+        if (!userId) return false;
+
+        const recuringTimeOptions = {
+            $exists: true,
+            $ne: [null, undefined]
+        };
+
+        return Todo.find({ userId, recuringTime: recuringTimeOptions });
     }
 
     static save(todo) {
