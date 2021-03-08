@@ -6,6 +6,7 @@
     "scripts": {
         "start": "NODE_ENV=production node index.js",
         "dev": "NODE_ENV=development nodemon index.js",
+        "dev:local": "NODE_ENV=development DB_TYPE=local nodemon index.js",
         "test": "mocha",
         "docs": "grunt"
     },

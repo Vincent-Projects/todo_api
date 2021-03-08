@@ -60,11 +60,23 @@ class TodoService {
         return { todo: todo };
     }
 
-    static async deleteTask(userId, taskId) {
+    static async deleteTask({ userId = undefined, taskId = undefined } = {}) {
+        if (!userId) {
+            const error = new Error("No UserId Provided");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
+        if (!taskId) {
+            const error = new Error("No TaskId Provided");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
         let oldTask;
 
         try {
-            oldTask = await TodosDAL.deleteTodo(userId, taskId);
+            oldTask = await TodosDAL.deleteTodo({ userId, taskId });
         } catch (err) {
             if (!err.statusCode) {
                 err.statusCode = statusCodes.UNAUTHORIZED;
@@ -81,6 +93,10 @@ class TodoService {
         return { oldTodo: oldTask };
     }
 
+    /**
+     * @author Vincent Rouilhac
+     * @deprecated since api version 1.0.0
+     */
     static async update(id, task, complete, archived) {
         if (task === null && complete === null && archived === null) {
             const error = new Error('There is no data to be changed');
@@ -153,6 +169,20 @@ class TodoService {
         }
 
         return { todo };
+    }
+
+    static async completeTask({ userId = undefined, taskId = undefined } = {}) {
+        if (!userId) {
+            const error = new Error("No UserId Provided");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
+        if (!taskId) {
+            const error = new Error("No TaskId Provided");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
     }
 }
 
