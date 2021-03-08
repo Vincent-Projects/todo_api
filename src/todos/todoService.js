@@ -6,7 +6,13 @@ function isBoolean(value) {
 }
 
 class TodoService {
-    static async getTodos(userId) {
+    static async getTasks(userId) {
+        if (!userId) {
+            const error = new Error("No UserId Provided");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
         let todos;
 
         try {
@@ -27,18 +33,24 @@ class TodoService {
         return { todos };
     }
 
-    static async addTask(userId, task) {
+    static async addTask({ userId = undefined, task = undefined } = {}) {
 
         if (!task) {
-            const error = new Error('No task provided');
-            error.statucCode = statusCodes.UNAUTHORIZED;
+            const error = new Error('No Task Provided');
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
+        if (!userId) {
+            const error = new Error('No UserId Provided');
+            error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
 
         let todo;
 
         try {
-            todo = await TodosDAL.saveTodo(userId, task);
+            todo = await TodosDAL.saveTodo({ userId, task });
         } catch (err) {
             if (!err.statusCode)
                 err.statusCode = statusCodes.UNAUTHORIZED;
