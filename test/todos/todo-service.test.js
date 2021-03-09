@@ -190,7 +190,7 @@ describe("TodoService", function () {
                 });
         });
 
-        it("should return an object with property err if no userId is provided", function () {
+        it("should return an object with property err if no userId is provided", function (done) {
             let infos = {
                 taskId: "some-task-id"
             };
@@ -205,9 +205,53 @@ describe("TodoService", function () {
                 });
         });
 
-        it("should return an object with property err if no task has been found with provided taskId");
+        it("should return an object with property err if no task has been found with provided arguments", function (done) {
+            let infos = {
+                userId: "some-user-id",
+                taskId: "some-task-id"
+            };
 
-        it("should return an object with property err if no task has been found with provided userId");
+            sinon.stub(TodosDAL, "getById");
+            TodosDAL.getById.returns(new Promise((resolve) => resolve(undefined)));
+
+            TodoService.completeTask(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No Data Found", errStatusCode: 401 });
+
+                    TodosDAL.getById.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.getById.restore();
+                    done(err);
+                });
+        });
+
+        it("should return an object with property err if the userId provided does not match the userId of task fetch by taskId", function () {
+            let infos = {
+                userId: "some-user-id",
+                taskId: "some-task-id"
+            };
+
+            sinon.stub(TodosDAL, "getById");
+            TodosDAL.getById.returns(new Promise((resolve) => {
+                let task = {
+                    userId: "some-other-user-id"
+                };
+
+                resolve(task);
+            }));
+
+            TodoService.completeTask(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No Permissions", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.getById.restore();
+                    done(err);
+                });
+        });
 
         it("should return an object with property todo with updated complete field to true if we pass the id of a todo that is false", function (done) {
             let infos = {
@@ -217,15 +261,20 @@ describe("TodoService", function () {
 
             let task = {
                 _id: "task-id",
-                complete: false
+                userId: "some-user-id",
+                complete: false,
+                save: function () {
+                    return new Promise((resolve) => {
+                        resolve(this);
+                    });
+                }
             };
 
-            sinon.stub(TodosDAL, "save");
-            TodosDAL.save
-                .withArgs({ _id: infos.taskId, complete: true })
+            sinon.stub(TodosDAL, "getById");
+            TodosDAL.getById
+                .withArgs(task._id)
                 .returns(new Promise((resolve) => {
-                    task.complete = true;
-                    resolve({ _id: infos.taskId, complete: true });
+                    resolve(task);
                 }));
 
             TodoService.completeTask(infos)
@@ -235,16 +284,109 @@ describe("TodoService", function () {
                     expect(result.todo._id).to.equal(infos.taskId);
                     expect(result.todo).to.have.property("complete");
                     expect(result.todo.complete).to.equal(true);
-                    expect(task.complete).to.equal(true);
+
+                    TodosDAL.getById.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.getById.restore();
+                    done(err);
+                });
+        });
+        it("should return an object with property todo with updated complete field to false if we pass the id of a todo that is true", function () {
+            let infos = {
+                userId: "some-user-id",
+                taskId: "task-id"
+            };
+
+            let task = {
+                _id: "task-id",
+                userId: "some-user-id",
+                complete: true,
+                save: function () {
+                    return new Promise((resolve) => {
+                        resolve(this);
+                    });
+                }
+            };
+
+            sinon.stub(TodosDAL, "getById");
+            TodosDAL.getById
+                .withArgs(task._id)
+                .returns(new Promise((resolve) => {
+                    resolve(task);
+                }));
+
+            TodoService.completeTask(infos)
+                .then(result => {
+                    expect(result).to.have.property('todo');
+                    expect(result.todo).to.have.property('_id');
+                    expect(result.todo._id).to.equal(infos.taskId);
+                    expect(result.todo).to.have.property("complete");
+                    expect(result.todo.complete).to.equal(false);
+
+                    TodosDAL.getById.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.getById.restore();
+                    done(err);
+                });
+        });
+    });
+
+    describe("addTaskHabit", function () {
+        it("should return an object with property err if no task is provided", function (done) {
+            TodoService.addTaskHabit()
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No Task Provided", errStatusCode: 401 });
+                    done();
                 })
                 .catch(err => {
                     done(err);
                 });
         });
-        it("should return an object with property todo with updated complete field to false if we pass the id of a todo that is true");
-    });
 
-    //describe("addTaskHabit"); // Prend en arguments la tache et __week pour la semaine, __month pour le mois, __year pour l'année.
+        it("should return an object with property err if no frequency is provided", function (done) {
+            let infos = {
+                task: "some-task"
+            };
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No Frequency Provided", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                });
+        });
+
+        it("should return an object with property err if frequency is invalid from the list");
+
+        it("should return an object with property err if no recuringDate is provided", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: "WEEK"
+            };
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No RecuringDate Provided", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                });
+        });
+
+        it("should return an object with property err if no userId is provided");
+        it("should return an object with property err if no spacedNumberDay is provided when frequency is set ti CUSTOM");
+        it("should return a task as habit with recuringWeekDay set to MONDAY if the given date is set to monday and frequency to WEEK");
+        it("should return a task as habit with recuringDay set to a number ranged to 0-30 based on the date if frequency is MONTH");
+        it("should return a task as habit with recuringDate set to a specific date if the given date is provided and frequency to YEAR");
+        it("should return a task as habit with recuringTime set to a specific number if the given spacedNumberDay is provided and frequency to CUSTOM");
+    }); // Prend en arguments la tache et __week pour la semaine, __month pour le mois, __year pour l'année, et une date pour la date a partir de quand ( week ca prends le jours, mois ca prends le numero et année ca prends tout ).
     //describe("completeTaskHabit") // Complete et duplique la tache habit qui est donnée avec complete a true. La last update de la nouvelle habit dupluqué sera la date de validation, et l'id sera retourner, l'habitude de base reste inchangé
-
+    //describe("deleteTaskHabit");
 });

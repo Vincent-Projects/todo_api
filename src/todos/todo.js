@@ -31,12 +31,22 @@ const TodoSchema = Schema({
         default: null
     },
     recuringTime: {
-        type: Number, // represent the number of days this is used for habits
+        type: Number, // represent the number of days this is used for custom habits habits
         required: false,
         default: null
     },
-    recuringDate: {
+    recuringDate: { // for yearly habits habits
         type: Date,
+        required: false,
+        default: null
+    },
+    recuringDay: { // For monthly habits the number represent the date
+        type: Number,
+        required: false,
+        default: null
+    },
+    recuringWeekDay: { // for weekly habits
+        type: String,
         required: false,
         default: null
     },

@@ -5,6 +5,12 @@ function isBoolean(value) {
     return value === true || value === false;
 }
 
+function createErrorObject({ errMessage, errStatusCode }) {
+    const error = new Error(errMessage);
+    error.statusCode = errStatusCode;
+    return error;
+}
+
 class TodoService {
     static async getTasks(userId) {
         if (!userId) {
@@ -183,6 +189,75 @@ class TodoService {
             error.statusCode = statusCodes.UNAUTHORIZED;
             return { err: error };
         }
+
+        let todo;
+
+        try {
+            todo = await TodosDAL.getById(taskId);
+        } catch (err) {
+            if (!err.statusCode) {
+                err.statusCode = statusCodes.SERVER_ERROR;
+            }
+            return { err: err };
+        }
+
+        if (!todo) {
+            const error = new Error("No Data Found");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
+        if (todo.userId !== userId) {
+            const error = new Error("No Permissions");
+            error.statusCode = statusCodes.UNAUTHORIZED;
+            return { err: error };
+        }
+
+        todo.complete = !todo.complete;
+        let success;
+
+        try {
+            success = await todo.save();
+        } catch (err) {
+            if (!err.statusCode) {
+                err.statusCode = statusCodes.SERVER_ERROR;
+            }
+            return { err: err };
+        }
+
+        if (!success) {
+            const error = new Error("Problem updating data");
+            error.statusCode = statusCodes.SERVER_ERROR;
+            return { err: error };
+        }
+
+        return { todo: success };
+    }
+
+    static async addTaskHabit({ task = undefined, frequency = undefined, recuringDate = undefined } = {}) {
+        if (!task)
+            return {
+                err: createErrorObject({
+                    errMessage: "No Task Provided",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
+
+        if (!frequency)
+            return {
+                err: createErrorObject({
+                    errMessage: "No Frequency Provided",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
+
+        if (!recuringDate)
+            return {
+                err: createErrorObject({
+                    errMessage: "No RecuringDate Provided",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
     }
 }
 

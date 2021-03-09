@@ -39,7 +39,7 @@ class TodosDAL {
 
         if (typeof id !== "string") return false;
 
-        return Todo.findById({ _id: id });
+        return Todo.findById(id);
     }
 
     static getByProjectId({ userId = undefined, projectId = undefined } = {}) {
