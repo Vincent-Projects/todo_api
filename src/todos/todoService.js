@@ -1,6 +1,6 @@
 const TodosDAL = require('./todosDAL');
 const { statusCodes } = require('../constants');
-
+const FREQUENCY = require('./constants');
 function isBoolean(value) {
     return value === true || value === false;
 }
@@ -234,7 +234,7 @@ class TodoService {
         return { todo: success };
     }
 
-    static async addTaskHabit({ task = undefined, frequency = undefined, recuringDate = undefined } = {}) {
+    static async addTaskHabit({ task = undefined, frequency = undefined, recuringDate = undefined, userId = undefined } = {}) {
         if (!task)
             return {
                 err: createErrorObject({
@@ -251,10 +251,37 @@ class TodoService {
                 })
             };
 
+        if (frequency !== FREQUENCY.WEEKLY &&
+            frequency !== FREQUENCY.MONTHLY &&
+            frequency !== FREQUENCY.YEARLY &&
+            frequency !== FREQUENCY.CUSTOM)
+            return {
+                err: createErrorObject({
+                    errMessage: "Invalid Frequency",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
+
         if (!recuringDate)
             return {
                 err: createErrorObject({
                     errMessage: "No RecuringDate Provided",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
+
+        if (!(recuringDate instanceof Date))
+            return {
+                err: createErrorObject({
+                    errMessage: "Invalid Date Format",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
+
+        if (!userId)
+            return {
+                err: createErrorObject({
+                    errMessage: "No UserId Provided",
                     errStatusCode: statusCodes.UNAUTHORIZED
                 })
             };

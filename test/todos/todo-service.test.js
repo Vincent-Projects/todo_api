@@ -4,6 +4,7 @@ const sinon = require('sinon');
 const Todo = require("../../src/todos").Todo;
 const TodosDAL = require("../../src/todos").TodosDAL;
 const TodoService = require("../../src/todos").TodoService;
+const FREQUENCY = require('../../src/todos/constants');
 
 function testFuncReturnsErrObj({ testObject, errMessage, errStatusCode = 401 }) {
     expect(testObject).to.have.property("err");
@@ -362,12 +363,26 @@ describe("TodoService", function () {
                 });
         });
 
-        it("should return an object with property err if frequency is invalid from the list");
+        it("should return an object with property err if frequency is invalid from the list", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: "non valid frequency"
+            };
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "Invalid Frequency", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                });
+        });
 
         it("should return an object with property err if no recuringDate is provided", function (done) {
             let infos = {
                 task: "some-task",
-                frequency: "WEEK"
+                frequency: FREQUENCY.WEEKLY
             };
 
             TodoService.addTaskHabit(infos)
@@ -380,8 +395,42 @@ describe("TodoService", function () {
                 });
         });
 
-        it("should return an object with property err if no userId is provided");
-        it("should return an object with property err if no spacedNumberDay is provided when frequency is set ti CUSTOM");
+        it("should return an object with property err if recuringDate is not of type Date", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: "WEEK",
+                recuringDate: "some non valid date"
+            };
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "Invalid Date Format", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                });
+        });
+
+        it("should return an object with property err if no userId is provided", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: "WEEK",
+                recuringDate: new Date()
+            };
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No UserId Provided", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                });
+        });
+
+        it("should return an object with property err if no spacedNumberDay is provided when frequency is set to CUSTOM");
+
         it("should return a task as habit with recuringWeekDay set to MONDAY if the given date is set to monday and frequency to WEEK");
         it("should return a task as habit with recuringDay set to a number ranged to 0-30 based on the date if frequency is MONTH");
         it("should return a task as habit with recuringDate set to a specific date if the given date is provided and frequency to YEAR");
