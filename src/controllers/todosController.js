@@ -6,7 +6,7 @@ const statusCodes = require('../constants').statusCodes;
 exports.getTodos = async (req, res, next) => {
     const userId = req.userId;
 
-    const { err, todos } = await TodoService.getTodos(userId);
+    const { err, todos } = await TodoService.getTasks(userId);
 
     if (err)
         return next(err);
@@ -37,7 +37,7 @@ exports.postTodo = async (req, res, next) => {
 
     const userId = req.userId;
 
-    const { err, todo } = await TodoService.addTask(userId, task);
+    const { err, todo } = await TodoService.addTask({ userId, task });
 
     if (err)
         return next(err);
@@ -65,7 +65,7 @@ exports.deleteTodo = async (req, res, next) => {
     const { todoId } = req.params;
     const { userId } = req;
 
-    const { err, oldTodo } = await TodoService.deleteTask(userId, todoId);
+    const { err, oldTodo } = await TodoService.deleteTask({ userId, taskId: todoId });
 
     if (err)
         return next(err);

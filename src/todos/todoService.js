@@ -82,7 +82,7 @@ class TodoService {
         let oldTask;
 
         try {
-            oldTask = await TodosDAL.deleteTodo({ userId, taskId });
+            oldTask = await TodosDAL.deleteTodo({ userId, todoId: taskId });
         } catch (err) {
             if (!err.statusCode) {
                 err.statusCode = statusCodes.UNAUTHORIZED;
