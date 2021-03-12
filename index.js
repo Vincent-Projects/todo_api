@@ -34,7 +34,12 @@ server.use(async (err, req, res, next) => {
 
 
 const PORT = process.env.PORT || '8080';
-const MONGO_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.xekax.mongodb.net/${process.env.MONGODB_NAME}`;
+let MONGO_URI;
+if (process.env.DB_TYPE && process.env.DB_TYPE === 'local')
+    MONGO_URI = `mongodb://localhost/${process.env.MONGODB_NAME}`;
+else
+    MONGO_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.xekax.mongodb.net/${process.env.MONGODB_NAME}`;
+
 const MONGO_OPTIONS = {
     useNewUrlParser: true,
     useUnifiedTopology: true
