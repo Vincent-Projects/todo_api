@@ -24,6 +24,41 @@ class TodosDAL {
         return todo.save();
     }
 
+    static saveHabit({ task, userId, recuringDate, recuringTime, recuringDay, recuringWeekDay, startedRecuringTime }) {
+        if (!task)
+            return false;
+
+        if (!userId)
+            return false;
+
+        if (!recuringDate)
+            return false;
+
+        if (!recuringTime)
+            return false;
+
+        if (!recuringDay)
+            return false;
+
+        if (!recuringWeekDay)
+            return false;
+
+        if (!startedRecuringTime)
+            return false;
+
+        let habit = new Todo({
+            task,
+            userId,
+            recuringDate,
+            recuringTime,
+            recuringDay,
+            recuringWeekDay,
+            startedRecuringTime
+        });
+
+        return habit;
+    }
+
     static deleteTodo({ userId = undefined, todoId = undefined } = {}) {
         if (!userId)
             return false;

@@ -234,7 +234,13 @@ class TodoService {
         return { todo: success };
     }
 
-    static async addTaskHabit({ task = undefined, frequency = undefined, recuringDate = undefined, userId = undefined } = {}) {
+    static async addTaskHabit({
+        task = undefined,
+        frequency = undefined,
+        recuringDate = undefined,
+        userId = undefined,
+        spacedNumberDays = undefined
+    } = {}) {
         if (!task)
             return {
                 err: createErrorObject({
@@ -285,6 +291,84 @@ class TodoService {
                     errStatusCode: statusCodes.UNAUTHORIZED
                 })
             };
+
+        let customSpacedNumberDays = spacedNumberDays;
+
+        if (frequency === "CUSTOM") {
+            if (!spacedNumberDays)
+                return {
+                    err: createErrorObject({
+                        errMessage: "No Recurence Time Provided",
+                        errStatusCode: statusCodes.UNAUTHORIZED
+                    })
+                };
+
+            if (typeof spacedNumberDays !== 'number')
+                customSpacedNumberDays = parseInt(customSpacedNumberDays);
+
+            if (isNaN(customSpacedNumberDays))
+                return {
+                    err: createErrorObject({
+                        errMessage: "Invalid Custom Recuring Time",
+                        errStatusCode: statusCodes.UNAUTHORIZED
+                    })
+                };
+        }
+
+
+        let habit;
+        let recuringTime = null;
+        let recuringDay = null;
+        let recuringWeekDay = null;
+        let startedRecuringTime = null;
+
+        switch (frequency) {
+            case FREQUENCY.CUSTOM:
+                recuringTime = customSpacedNumberDays;
+                startedRecuringTime = recuringDate;
+                break;
+            case FREQUENCY.WEEKLY:
+                recuringWeekDay = FREQUENCY.WEEKDAYS[recuringDate.getDay()]
+                break;
+            case FREQUENCY.MONTHLY:
+                recuringDay = recuringDate.getDate();
+                break;
+            case FREQUENCY.YEARLY:
+                break;
+            default:
+                return {
+                    err: createErrorObject({
+                        errMessage: "Invalid Frequency",
+                        errStatusCode: statusCodes.UNAUTHORIZED
+                    })
+                };
+        }
+
+        try {
+            habit = await TodosDAL.saveHabit({
+                task: task,
+                userId: userId,
+                recuringDate: (frequency === FREQUENCY.YEARLY) ? recuringDate : null, // if yearly habits
+                recuringTime,
+                recuringDay,
+                recuringWeekDay,
+                startedRecuringTime
+            });
+        } catch (err) {
+            if (!err.statusCode)
+                err.statusCode = statusCodes.SERVER_ERROR;
+            return { err: err };
+        }
+
+        if (!habit)
+            return {
+                err: createErrorObject({
+                    errMessage: "Something Wrong Savind Data",
+                    errStatusCode: statusCodes.UNAUTHORIZED
+                })
+            };
+
+        return { habit };
     }
 }
 

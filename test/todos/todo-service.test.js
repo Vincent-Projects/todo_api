@@ -1,3 +1,5 @@
+const chai = require('chai');
+chai.use(require('chai-datetime'));
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
@@ -429,12 +431,195 @@ describe("TodoService", function () {
                 });
         });
 
-        it("should return an object with property err if no spacedNumberDay is provided when frequency is set to CUSTOM");
+        it("should return an object with property err if no spacedNumberDay is provided when frequency is set to CUSTOM", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: "CUSTOM",
+                recuringDate: new Date(),
+                userId: "some-user-id"
+            };
 
-        it("should return a task as habit with recuringWeekDay set to MONDAY if the given date is set to monday and frequency to WEEK");
-        it("should return a task as habit with recuringDay set to a number ranged to 0-30 based on the date if frequency is MONTH");
-        it("should return a task as habit with recuringDate set to a specific date if the given date is provided and frequency to YEAR");
-        it("should return a task as habit with recuringTime set to a specific number if the given spacedNumberDay is provided and frequency to CUSTOM");
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    testFuncReturnsErrObj({ testObject: result, errMessage: "No Recurence Time Provided", errStatusCode: 401 });
+                    done();
+                })
+                .catch(err => {
+                    done(err);
+                })
+        });
+
+        it("should return a task as habit with recuringWeekDay set to MONDAY if the given date is set to monday and frequency to WEEK", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: FREQUENCY.WEEKLY,
+                recuringDate: new Date('March 08, 2021 15:00:00'), // March 03 is Monday
+                userId: "some-user-id"
+            };
+
+            sinon.stub(TodosDAL, "saveHabit");
+            TodosDAL.saveHabit
+                .withArgs({
+                    task: infos.task,
+                    userId: infos.userId,
+                    recuringDate: null,
+                    recuringTime: null,
+                    recuringDay: null,
+                    recuringWeekDay: FREQUENCY.MONDAY,
+                    startedRecuringTime: null
+                })
+                .returns(new Promise((resolve) => {
+                    resolve({
+                        _id: "sample-id",
+                        userId: infos.userId,
+                        recuringWeekDay: FREQUENCY.MONDAY
+                    })
+                }));
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    console.log(result);
+                    expect(result).to.have.property("habit");
+                    expect(result.habit).to.have.property("recuringWeekDay");
+                    expect(result.habit.recuringWeekDay).to.equal("MONDAY");
+                    TodosDAL.saveHabit.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.saveHabit.restore();
+                    done(err);
+                });
+        });
+
+        it("should return a task as habit with recuringDay set to a number ranged to 0-30 based on the date if frequency is MONTH", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: FREQUENCY.MONTHLY,
+                recuringDate: new Date('March 08, 2021 15:00:00'), // March 03 is Monday
+                userId: "some-user-id"
+            };
+
+            sinon.stub(TodosDAL, "saveHabit");
+            TodosDAL.saveHabit
+                .withArgs({
+                    task: infos.task,
+                    userId: infos.userId,
+                    recuringDate: null,
+                    recuringTime: null,
+                    recuringDay: 8,
+                    recuringWeekDay: null,
+                    startedRecuringTime: null
+                })
+                .returns(new Promise((resolve) => {
+                    resolve({
+                        _id: "sample-id",
+                        userId: infos.userId,
+                        recuringDay: 8
+                    })
+                }));
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    console.log(result);
+                    expect(result).to.have.property("habit");
+                    expect(result.habit).to.have.property("recuringDay");
+                    expect(result.habit.recuringDay).to.equal(8);
+                    TodosDAL.saveHabit.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.saveHabit.restore();
+                    done(err);
+                });
+        });
+
+        it("should return a task as habit with recuringDate set to a specific date if the given date is provided and frequency to YEAR", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: FREQUENCY.YEARLY,
+                recuringDate: new Date('March 08, 2021 15:00:00'), // March 03 is Monday
+                userId: "some-user-id"
+            };
+
+            sinon.stub(TodosDAL, "saveHabit");
+            TodosDAL.saveHabit
+                .withArgs({
+                    task: infos.task,
+                    userId: infos.userId,
+                    recuringDate: new Date('March 08, 2021 15:00:00'),
+                    recuringTime: null,
+                    recuringDay: null,
+                    recuringWeekDay: null,
+                    startedRecuringTime: null
+                })
+                .returns(new Promise((resolve) => {
+                    resolve({
+                        _id: "sample-id",
+                        userId: infos.userId,
+                        recuringDate: new Date('March 08, 2021 15:00:00')
+                    })
+                }));
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    console.log(result);
+                    expect(result).to.have.property("habit");
+                    expect(result.habit).to.have.property("recuringDate");
+                    expect(result.habit.recuringDate).to.equalDate(new Date('March 08, 2021 15:00:00'));
+                    TodosDAL.saveHabit.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.saveHabit.restore();
+                    done(err);
+                });
+        });
+
+        it("should return a task as habit with recuringTime set to a specific number if the given spacedNumberDay is provided and frequency to CUSTOM", function (done) {
+            let infos = {
+                task: "some-task",
+                frequency: FREQUENCY.CUSTOM,
+                recuringDate: new Date('March 08, 2021 15:00:00'), // March 03 is Monday
+                userId: "some-user-id",
+                spacedNumberDays: 4
+            };
+
+            sinon.stub(TodosDAL, "saveHabit");
+            TodosDAL.saveHabit
+                .withArgs({
+                    task: infos.task,
+                    userId: infos.userId,
+                    recuringDate: null,
+                    recuringTime: infos.spacedNumberDays,
+                    recuringDay: null,
+                    recuringWeekDay: null,
+                    startedRecuringTime: infos.recuringDate
+                })
+                .returns(new Promise((resolve) => {
+                    resolve({
+                        _id: "sample-id",
+                        userId: infos.userId,
+                        startedRecuringTime: new Date('March 08, 2021 15:00:00'),
+                        recuringTime: infos.spacedNumberDays
+                    })
+                }));
+
+            TodoService.addTaskHabit(infos)
+                .then(result => {
+                    console.log(result);
+                    expect(result).to.have.property("habit");
+                    expect(result.habit).to.have.property("startedRecuringTime");
+                    expect(result.habit.startedRecuringTime).to.equalDate(new Date('March 08, 2021 15:00:00'));
+                    expect(result.habit).to.have.property("recuringTime");
+                    expect(result.habit.recuringTime).to.equal(infos.spacedNumberDays);
+                    TodosDAL.saveHabit.restore();
+                    done();
+                })
+                .catch(err => {
+                    TodosDAL.saveHabit.restore();
+                    done(err);
+                });
+        });
     }); // Prend en arguments la tache et __week pour la semaine, __month pour le mois, __year pour l'année, et une date pour la date a partir de quand ( week ca prends le jours, mois ca prends le numero et année ca prends tout ).
     //describe("completeTaskHabit") // Complete et duplique la tache habit qui est donnée avec complete a true. La last update de la nouvelle habit dupluqué sera la date de validation, et l'id sera retourner, l'habitude de base reste inchangé
     //describe("deleteTaskHabit");

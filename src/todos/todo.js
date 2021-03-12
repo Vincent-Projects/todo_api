@@ -30,6 +30,11 @@ const TodoSchema = Schema({
         required: false,
         default: null
     },
+    startedRecuringTime: {
+        type: Date,
+        required: false,
+        default: null
+    },
     recuringTime: {
         type: Number, // represent the number of days this is used for custom habits habits
         required: false,
